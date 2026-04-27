@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Bus Tracking Login</title>
+    <link rel="icon" type="image/png" href="/static/bus.png" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        animation: bgAnim 5s ease infinite alternate;
+      }
+      @keyframes bgAnim {
+        0% {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        100% {
+          background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+      }
+      .login-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 380px;
+        animation: slideUp 0.5s ease;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .logo {
+        text-align: center;
+        font-size: 50px;
+        margin-bottom: 10px;
+        animation: bounce 2s infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+        font-size: 22px;
+        margin-bottom: 25px;
+      }
+      .input-group {
+        position: relative;
+        margin: 12px 0;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: 0.3s;
+      }
+      .input-group input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+      }
+      .input-group span {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+      }
+      .remember {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0;
+        color: #666;
+        font-size: 14px;
+      }
+      .remember input {
+        width: auto;
+      }
+      button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+      button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+      }
+      .links {
+        text-align: center;
+        margin-top: 15px;
+      }
+      .links a {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+      .links a:hover {
+        text-decoration: underline;
+      }
+      .error {
+        color: red;
+        text-align: center;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      .input-group input.invalid {
+        border-color: red;
+      }
+      .input-group input.valid {
+        border-color: green;
+      }
+      @media (max-width: 768px) {
+        .login-box {
+          width: 90%;
+          padding: 25px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-box">
+      <!-- <div class="logo"></div> -->
+      <h2>Smart Bus Tracking</h2>
+      <form action="/login" method="POST" onsubmit="return validate();">
+        <div class="input-group">
+          <span>✉️</span>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Enter Email"
+            oninput="validateEmail()"
+          />
+        </div>
+        <div class="input-group">
+          <span>🔒</span>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Enter Password"
+            oninput="validatePassword()"
+          />
+        </div>
+        <div class="remember">
+          <input type="checkbox" id="remember" name="remember" /> Remember Me
+        </div>
+        <button type="submit" id="loginBtn">Login →</button>
+      </form>
+      {% if error %}
+      <p class="error">❌ {{ error }}</p>
+      {% endif %} {% if lockout %}
+      <div style="text-align: center; color: red; margin-top: 10px">
+        🔒 Account locked! Wait <span id="countdown">180</span> seconds
+      </div>
+      <script>
+        document.getElementById("loginBtn").disabled = true;
+        document.getElementById("email").disabled = true;
+        document.getElementById("password").disabled = true;
+        var time = 180;
+        var timer = setInterval(function () {
+          time--;
+          document.getElementById("countdown").innerText = time;
+          if (time <= 0) {
+            clearInterval(timer);
+            location.reload();
+          }
+        }, 1000);
+      </script>
+      {% endif %}
+      <div class="links">
+        <a href="/forgot_password">Forgot Password?</a>
+        <a href="/register">Register</a>
+      </div>
+    </div>
+
+    <script>
+      function validateEmail() {
+        var email = document.getElementById("email");
+        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (re.test(email.value)) {
+          email.classList.add("valid");
+          email.classList.remove("invalid");
+        } else {
+          email.classList.add("invalid");
+          email.classList.remove("valid");
+        }
+      }
+
+      function validatePassword() {
+        var pass = document.getElementById("password");
+        if (pass.value.length >= 4) {
+          pass.classList.add("valid");
+          pass.classList.remove("invalid");
+        } else {
+          pass.classList.add("invalid");
+          pass.classList.remove("valid");
+        }
+      }
+
+      function validate() {
+        var email = document.getElementById("email").value;
+        var pass = document.getElementById("password").value;
+        if (!email || !pass) {
+          alert("Please fill all fields!");
+          return false;
+        }
+        document.getElementById("loginBtn").innerText = "Login";
+        return true;
+      }
+    </script>
+  </body>
+</html>

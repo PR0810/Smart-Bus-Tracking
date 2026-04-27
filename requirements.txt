@@ -1,0 +1,11 @@
+flask
+flask-mysqldb
+flask-socketio
+flask-jwt-extended
+flask-mail
+flask-limiter
+bcrypt
+requests
+google-generativeai
+scikit-learn
+numpy

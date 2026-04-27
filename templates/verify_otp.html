@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="icon" type="image/png" href="/static/bus.png" />
+    <title>Verify OTP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        width: 380px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+      }
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 15px;
+      }
+      input:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      p {
+        text-align: center;
+        margin-top: 15px;
+        color: #666;
+      }
+      a {
+        color: #667eea;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h2>🔐 Verify OTP</h2>
+      <form action="/verify_otp" method="POST">
+        <input type="text" name="otp" placeholder="Enter OTP" required />
+        <input
+          type="password"
+          name="new_password"
+          placeholder="🔒 New Password"
+          required
+        />
+        <button type="submit">Reset Password →</button>
+      </form>
+      <p><a href="/login">← Back to Login</a></p>
+    </div>
+  </body>
+</html>

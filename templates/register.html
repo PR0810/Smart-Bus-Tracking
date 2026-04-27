@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="icon" type="image/png" href="/static/bus.png" />
+    <title>Register</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        width: 380px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 8px 0;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 15px;
+      }
+      input:focus,
+      select:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      button:hover {
+        transform: scale(1.02);
+      }
+      p {
+        text-align: center;
+        margin-top: 15px;
+        color: #666;
+      }
+      a {
+        color: #667eea;
+        text-decoration: none;
+      }
+      @media (max-width: 768px) {
+        .box {
+          width: 90%;
+          padding: 25px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h2>🚌 Register</h2>
+      <form action="/register" method="POST">
+        <input type="text" name="name" placeholder="👤 Full Name" required />
+        <input type="email" name="email" placeholder="✉️ Email" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="🔒 Password"
+          required
+        />
+        <select name="role">
+          <option value="passenger">Passenger</option>
+          <option value="driver">Driver</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Register →</button>
+      </form>
+      <p>Already have account? <a href="/login">Login</a></p>
+    </div>
+  </body>
+</html>

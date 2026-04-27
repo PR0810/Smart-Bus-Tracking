@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="icon" type="image/png" href="/static/bus.png" />
+    <title>Profile</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+      }
+      .navbar {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 15px 30px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .navbar h1 {
+        font-size: 22px;
+      }
+      .navbar a {
+        color: white;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 15px;
+        border-radius: 8px;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+      }
+      .box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        width: 400px;
+      }
+      h3 {
+        color: #667eea;
+        margin-bottom: 20px;
+      }
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 8px 0;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 15px;
+      }
+      input:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .success {
+        color: green;
+        text-align: center;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>👤 My Profile</h1>
+      <a href="/logout">Logout</a>
+    </div>
+    <div class="container">
+      <div class="box">
+        <h3>Update Profile</h3>
+        <div
+          style="
+            background: #f0f2f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+          "
+        >
+          <p>👤 <b>Name:</b> {{ name }}</p>
+          <p>✉️ <b>Email:</b> {{ email }}</p>
+          <p>🔑 <b>Role:</b> {{ role }}</p>
+        </div>
+        <form action="/update_profile" method="POST">
+          <input type="text" name="name" placeholder="👤 New Name" />
+          <input
+            type="password"
+            name="old_password"
+            placeholder="🔒 Current Password"
+            required
+          />
+          <input
+            type="password"
+            name="new_password"
+            placeholder="🔑 New Password (optional)"
+          />
+          <button type="submit">Update →</button>
+        </form>
+        {% if msg %}
+        <p class="success">{{ msg }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

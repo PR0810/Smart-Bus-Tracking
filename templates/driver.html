@@ -1,0 +1,385 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Driver Dashboard</title>
+    <link rel="icon" type="image/png" href="/static/bus.png" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+      }
+      .navbar {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 15px 30px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+      .navbar h1 {
+        font-size: 22px;
+      }
+      .navbar-links a,
+      .navbar-links button {
+        color: white;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 15px;
+        border-radius: 8px;
+        margin-left: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .container {
+        padding: 20px 30px;
+      }
+      .bus-info-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 20px;
+        animation: fadeIn 0.5s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .bus-info-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 20px 25px;
+        color: white;
+      }
+      .bus-info-header h3 {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
+      .bus-info-header p {
+        opacity: 0.85;
+        font-size: 14px;
+      }
+      .bus-info-body {
+        padding: 20px 25px;
+      }
+      .info-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+      }
+      .info-badge {
+        background: #f0f2f5;
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #555;
+        border-left: 4px solid #667eea;
+      }
+      .passenger-update {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .passenger-update input {
+        padding: 10px;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 15px;
+        width: 100px;
+        transition: 0.3s;
+      }
+      .passenger-update input:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+      .btn {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.3s;
+      }
+      .btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+      .btn-green {
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+      }
+      .btn-red {
+        background: linear-gradient(135deg, #e94560, #c0392b);
+      }
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .schedule-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        padding: 20px 25px;
+        margin-bottom: 20px;
+      }
+      .schedule-card h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 12px;
+        text-align: center;
+      }
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #f0f2f5;
+        text-align: center;
+        font-size: 14px;
+      }
+      tr:hover td {
+        background: #f8f9ff;
+      }
+      #map {
+        height: 450px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        display: inline-block;
+        margin-right: 5px;
+      }
+      .status-dot.active {
+        background: #4caf50;
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+        .controls {
+          flex-direction: column;
+        }
+        .btn {
+          width: 100%;
+        }
+        #map {
+          height: 300px;
+        }
+      }
+      body.dark {
+        background: #1a1a2e;
+        color: white;
+      }
+      body.dark .bus-info-card,
+      body.dark .schedule-card {
+        background: #16213e;
+      }
+      body.dark .info-badge {
+        background: #0f3460;
+        color: #ccc;
+      }
+      body.dark td {
+        border-color: #333;
+        color: #ccc;
+      }
+      body.dark tr:hover td {
+        background: #0f3460;
+      }
+      body.dark .passenger-update input {
+        background: #0f3460;
+        color: white;
+        border-color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>🚌 Driver Dashboard</h1>
+      <div class="navbar-links">
+        <a href="/profile">👤 Profile</a>
+        <button onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="bus-info-card">
+        <div class="bus-info-header">
+          <h3>🚌 My Bus Information</h3>
+          <p id="busInfo">Loading...</p>
+        </div>
+        <div class="bus-info-body">
+          <div class="info-row" id="infoRow"></div>
+          <div class="passenger-update">
+            <label>👥 Update Passengers:</label>
+            <input type="number" id="passengerCount" min="0" placeholder="0" />
+            <button class="btn" onclick="updatePassengers()">✅ Update</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-green" onclick="startTracking()">
+          <span class="status-dot" id="statusDot"></span>▶ Start Tracking
+        </button>
+        <button class="btn btn-red" onclick="stopTracking()">
+          ⏹ Stop Tracking
+        </button>
+      </div>
+
+      <div class="schedule-card">
+        <h3>🕐 My Schedule</h3>
+        <table id="scheduleTable">
+          <tr>
+            <th>🕐 Departure</th>
+            <th>🏁 Arrival</th>
+            <th>📅 Days</th>
+          </tr>
+        </table>
+      </div>
+
+      <div id="map"></div>
+    </div>
+
+    <script>
+      var socket = io();
+      var map = L.map("map").setView([20.5937, 78.9629], 5);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+      var marker, tracking;
+
+      fetch("/get_my_bus")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.bus) {
+            var seats_left = Math.max(
+              0,
+              data.total_seats - data.current_passengers,
+            );
+            document.getElementById("busInfo").innerHTML =
+              `🚌 ${data.bus} (${data.bus_name || ""})`;
+            document.getElementById("infoRow").innerHTML = `
+                    <div class="info-badge">🛣️ Route: ${data.route || "N/A"}</div>
+                    <div class="info-badge">📍 ${data.from || "N/A"} → ${data.to || "N/A"}</div>
+                    <div class="info-badge">👥 ${data.current_passengers}/${data.total_seats} Passengers</div>
+                    <div class="info-badge">💺 ${seats_left} Seats Left</div>`;
+            document.getElementById("passengerCount").value =
+              data.current_passengers;
+          } else {
+            document.getElementById("busInfo").innerHTML = "❌ No bus assigned";
+          }
+        });
+
+      fetch("/get_my_schedule")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.length == 0) {
+            document.getElementById("scheduleTable").innerHTML +=
+              '<tr><td colspan="3">No schedule assigned</td></tr>';
+          }
+          data.forEach((s) => {
+            document.getElementById("scheduleTable").innerHTML +=
+              `<tr><td>${s.departure}</td><td>${s.arrival}</td><td>${s.days}</td></tr>`;
+          });
+        });
+
+      function startTracking() {
+        document.getElementById("statusDot").classList.add("active");
+
+        // Smart interval - moving fast = update fast, slow = update slow
+        tracking = setInterval(() => {
+          navigator.geolocation.getCurrentPosition(function (pos) {
+            var lat = pos.coords.latitude;
+            var lng = pos.coords.longitude;
+            var speed = pos.coords.speed || 0;
+
+            if (marker) {
+              marker.setLatLng([lat, lng]);
+            } else {
+              marker = L.marker([lat, lng]).addTo(map);
+            }
+            map.setView([lat, lng], 15);
+            socket.emit("location_update", { lat, lng });
+
+            // Smart interval based on speed
+            clearInterval(tracking);
+            var interval = speed > 10 ? 3000 : 10000; // fast=3s, slow=10s
+            tracking = setInterval(arguments.callee, interval);
+          });
+        }, 3000);
+      }
+      function stopTracking() {
+        clearInterval(tracking);
+        document.getElementById("statusDot").classList.remove("active");
+      }
+
+      function updatePassengers() {
+        var count = document.getElementById("passengerCount").value;
+        fetch("/update_passengers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ count }),
+        })
+          .then((r) => r.json())
+          .then(() => location.reload());
+      }
+
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+        var isDark = document.body.classList.contains("dark");
+        document.getElementById("darkBtn").innerText = isDark
+          ? "☀️ Light"
+          : "🌙 Dark";
+        localStorage.setItem("darkMode", isDark);
+      }
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+        document.getElementById("darkBtn").innerText = "☀️ Light";
+      }
+    </script>
+  </body>
+</html>
