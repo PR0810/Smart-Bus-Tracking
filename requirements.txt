@@ -1,5 +1,5 @@
 flask
-flask-mysqldb
+flask-mysql-connector
 flask-socketio
 flask-jwt-extended
 flask-mail
@@ -9,3 +9,5 @@ requests
 google-generativeai
 scikit-learn
 numpy
+mysqlclient
+gunicorn
