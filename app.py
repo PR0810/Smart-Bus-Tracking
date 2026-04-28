@@ -1,5 +1,5 @@
 from urllib import response
-
+import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_mysqldb import MySQL
 from flask_socketio import SocketIO, emit
@@ -19,10 +19,11 @@ from flask_mail import Mail, Message
 import random
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '1234#Sahu'
-app.config['MYSQL_DB'] = 'bus_tracking'
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'root')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', '1234#Sahu')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'bus_tracking')
+app.config['MYSQL_PORT'] = int(os.environ.get('MYSQL_PORT', 3306))
 app.secret_key = 'bus123'
 limiter = Limiter(get_remote_address,app=app, default_limits=["200 per day"])
 app.config['JWT_SECRET_KEY'] = 'jwt-bus-tracking-secret'
