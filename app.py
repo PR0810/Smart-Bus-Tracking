@@ -19,7 +19,7 @@ from flask_mail import Mail, Message
 import random
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'localhost')
+app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
 app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
 app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', '1234#Sahu')
 app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
