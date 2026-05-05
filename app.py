@@ -23,7 +23,7 @@ app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
 app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
 app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', '1234#Sahu')
 app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
-app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
+app.config['MYSQLPORT'] = int(os.environ.get('MYSQLPORT', 3306))
 app.secret_key = 'bus123'
 limiter = Limiter(get_remote_address,app=app, default_limits=["200 per day"])
 app.config['JWT_SECRET_KEY'] = 'jwt-bus-tracking-secret'

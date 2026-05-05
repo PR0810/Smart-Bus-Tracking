@@ -493,16 +493,20 @@
           var speech = event.results[0][0].transcript;
           console.log("Voice:", speech);
 
+          // Try Hindi "से" split
           var words = speech.split(" से ");
           if (words.length >= 2) {
-            document.getElementById("from").value = words[0];
+            document.getElementById("from").value = words[0].trim();
             document.getElementById("to").value = words[1]
               .replace(" ढूंढो", "")
               .replace(" बस", "")
+              .replace(" जाना है", "")
               .trim();
             searchBus();
           } else {
-            alert('Bolo: "New Market se Karond bus dhundo"');
+            // Just put in from field
+            document.getElementById("from").value = speech;
+            alert('Aur bolo: "karond se new market"');
           }
         };
 
