@@ -17,13 +17,23 @@ import google.generativeai as genai
 genai.configure(api_key='AIzaSyDHjGK7QEYyRgvL5zUwm5mzxyWZ_DNlqcc')
 from flask_mail import Mail, Message
 import random
+from urllib.parse import urlparse
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
-app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
-app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', '1234#Sahu')
-app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
-app.config['MYSQLPORT'] = int(os.environ.get('MYSQLPORT', 3306))
+mysql_url = os.environ.get('MYSQL_PUBLIC_URL', '')
+if mysql_url:
+    parsed = urlparse(mysql_url)
+    app.config['MYSQL_HOST'] = parsed.hostname
+    app.config['MYSQL_USER'] = parsed.username
+    app.config['MYSQL_PASSWORD'] = parsed.password
+    app.config['MYSQL_DB'] = parsed.path[1:]
+    app.config['MYSQL_PORT'] = parsed.port
+else:
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'root'
+    app.config['MYSQL_PASSWORD'] = '1234#Sahu'
+    app.config['MYSQL_DB'] = 'bus_tracking'
+    app.config['MYSQL_PORT'] = 3306
 app.secret_key = 'bus123'
 limiter = Limiter(get_remote_address,app=app, default_limits=["200 per day"])
 app.config['JWT_SECRET_KEY'] = 'jwt-bus-tracking-secret'
