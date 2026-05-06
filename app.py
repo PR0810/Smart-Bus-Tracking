@@ -14,7 +14,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from sklearn.linear_model import LinearRegression
 import numpy as np
 import google.generativeai as genai
-genai.configure(api_key='AIzaSyDHjGK7QEYyRgvL5zUwm5mzxyWZ_DNlqcc')
+genai.configure(api_key='AIzaSyBWvtNOqDjE_IjeBfOTqNDjScHfUJzw3c8')
 from flask_mail import Mail, Message
 import random
 from urllib.parse import urlparse
