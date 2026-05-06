@@ -449,18 +449,18 @@
                     ? '<span class="status-badge status-yellow">🟡 Almost Full</span>'
                     : '<span class="status-badge status-red">🔴 Full</span>';
               list.innerHTML += `
-                                    <div class="bus-card">
-                                        <div class="bus-card-header">
-                                            <h4>🚌 ${bus.bus_number}</h4>
-                                            <p>📛 ${bus.bus_name || "N/A"}</p>
-                                        </div>
-                                        <div class="bus-card-body">
-                                            <p>🛣️ ${bus.route_name}</p>
-                                            <p>📍 ${bus.start_point} → ${bus.end_point}</p>
-                                            <p>👥 ${bus.current_passengers}/${bus.total_seats} Passengers</p>
-                                            ${status}
-                                        </div>
-                                    </div>`;
+                                          <div class="bus-card">
+                                              <div class="bus-card-header">
+                                                  <h4>🚌 ${bus.bus_number}</h4>
+                                                  <p>📛 ${bus.bus_name || "N/A"}</p>
+                                              </div>
+                                              <div class="bus-card-body">
+                                                  <p>🛣️ ${bus.route_name}</p>
+                                                  <p>📍 ${bus.start_point} → ${bus.end_point}</p>
+                                                  <p>👥 ${bus.current_passengers}/${bus.total_seats} Passengers</p>
+                                                  ${status}
+                                              </div>
+                                          </div>`;
             });
             fetch("/get_schedules?bus_number=" + data[0].bus_number)
               .then((r) => r.json())
@@ -486,27 +486,34 @@
         document.getElementById("darkBtn").innerText = "☀️ Light";
       }
       function startVoice() {
+        if (!("webkitSpeechRecognition" in window)) {
+          alert("Voice search supported nahi hai!");
+          return;
+        }
         var recognition = new webkitSpeechRecognition();
         recognition.lang = "hi-IN";
         recognition.start();
+
         recognition.onresult = function (event) {
           var speech = event.results[0][0].transcript;
           console.log("Voice:", speech);
 
-          // Try Hindi "से" split
-          var words = speech.split(" से ");
-          if (words.length >= 2) {
+          // Hindi "से" split
+          if (speech.includes(" से ")) {
+            var words = speech.split(" से ");
             document.getElementById("from").value = words[0].trim();
             document.getElementById("to").value = words[1]
-              .replace(" ढूंढो", "")
-              .replace(" बस", "")
-              .replace(" जाना है", "")
+              .replace("ढूंढो", "")
+              .replace("बस", "")
+              .replace("जाना है", "")
+              .replace("जाना", "")
+              .replace("कॉलेज", "")
               .trim();
-            searchBus();
           } else {
-            // Just put in from field
-            document.getElementById("from").value = speech;
+            // Single location - put in from field
+            document.getElementById("from").value = speech.trim();
           }
+          searchBus();
         };
 
         recognition.onerror = function () {
