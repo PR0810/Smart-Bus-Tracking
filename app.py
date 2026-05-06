@@ -17,6 +17,10 @@ import google.generativeai as genai
 genai.configure(api_key='AIzaSyBWvtNOqDjE_IjeBfOTqNDjScHfUJzw3c8')
 from flask_mail import Mail, Message
 import random
+import random
+from collections import defaultdict
+import time
+login_attempts = defaultdict(list)
 from urllib.parse import urlparse
 app = Flask(__name__)
 
@@ -74,22 +78,30 @@ def register():
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit(" 3 per 5 minute")
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
+        ip = request.remote_addr
+        
+        # Check attempts
+        now = time.time()
+        attempts = [t for t in login_attempts[ip] if now - t < 300]  # 5 min
+        
+        if len(attempts) >= 3:
+            return render_template('login.html', lockout=True), 429
+        
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM users WHERE email=%s", (email,))
         user = cur.fetchone()
         cur.close()
 
         if user and bcrypt.checkpw(password.encode('utf-8'), user[3].encode('utf-8')):
+            login_attempts[ip] = []  # Reset on success
             session['user'] = email
             if request.form.get('remember'):
-                  session.permanent=True
-            session['role']=user[4]
+                session.permanent = True
+            session['role'] = user[4]
             access_token = create_access_token(identity={'email': email, 'role': user[4]})
             session['token'] = access_token
             if user[4] == 'admin':
@@ -99,6 +111,7 @@ def login():
             else:
                 return redirect('/passenger')
         else:
+            login_attempts[ip].append(now)  # Count wrong attempt
             return render_template('login.html', error='Invalid Email or Password!')
 
     return render_template('login.html')
