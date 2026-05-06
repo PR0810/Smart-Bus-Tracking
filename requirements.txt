@@ -11,4 +11,4 @@ scikit-learn
 numpy
 mysqlclient
 gunicorn
-eventlet>=0.35.2
+gevent
