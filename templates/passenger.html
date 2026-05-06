@@ -486,33 +486,37 @@
         document.getElementById("darkBtn").innerText = "☀️ Light";
       }
       function startVoice() {
-        if (!("webkitSpeechRecognition" in window)) {
-          alert("Voice search supported nahi hai!");
-          return;
-        }
         var recognition = new webkitSpeechRecognition();
-        recognition.lang = "hi-IN";
+        recognition.lang = "en-IN";
+        recognition.interimResults = false;
         recognition.start();
 
         recognition.onresult = function (event) {
-          var speech = event.results[0][0].transcript;
+          var speech = event.results[0][0].transcript.toLowerCase();
           console.log("Voice:", speech);
 
-          // Hindi "से" split
-          if (speech.includes(" से ")) {
-            var words = speech.split(" से ");
-            document.getElementById("from").value = words[0].trim();
-            document.getElementById("to").value = words[1]
-              .replace("ढूंढो", "")
-              .replace("बस", "")
-              .replace("जाना है", "")
-              .replace("जाना", "")
-              .replace("कॉलेज", "")
-              .trim();
-          } else {
-            // Single location - put in from field
-            document.getElementById("from").value = speech.trim();
+          var from = "",
+            to = "";
+
+          // English split - "karond to sirt"
+          if (speech.includes(" to ")) {
+            var parts = speech.split(" to ");
+            from = parts[0].trim();
+            to = parts[1].trim();
           }
+          // Hindi split - "करोंद से सर्ट"
+          else if (speech.includes(" से ")) {
+            var parts = speech.split(" से ");
+            from = parts[0].trim();
+            to = parts[1].replace("ढूंढो", "").replace("बस", "").trim();
+          }
+          // Single word
+          else {
+            from = speech.trim();
+          }
+
+          document.getElementById("from").value = from;
+          document.getElementById("to").value = to;
           searchBus();
         };
 
