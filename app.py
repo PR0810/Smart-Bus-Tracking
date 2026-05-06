@@ -129,16 +129,15 @@ def passenger():
 
 @app.route('/search_bus')
 def search_bus():
-    from_place = request.args.get('from')
-    to_place = request.args.get('to')
+    from_place = request.args.get('from', '')
+    to_place = request.args.get('to','').strip()
     cur = mysql.connection.cursor()
     cur.execute("""
     SELECT b.bus_number, b.bus_name, b.total_seats, b.current_passengers, r.route_name, r.start_point, r.end_point 
     FROM buses b 
     JOIN routes r ON b.id = r.bus_id
-    WHERE(r.start_point LIKE %s OR r.start_point SOUNDS LIKE %s) 
-    AND (r.end_point LIKE %s OR r.end_point SOUNDS LIKE %s)
-    """, ('%'+from_place+'%', from_place, '%'+to_place+'%', to_place))
+    WHERE(r.start_point LIKE %s AND r.end_point LIKE %s) 
+    """, ('%'+from_place+'%', '%'+to_place+'%'))
     buses = cur.fetchall()
     cur.close()
     result = []
