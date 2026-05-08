@@ -9,6 +9,7 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
         margin: 0;
@@ -42,10 +43,6 @@
         border: none;
         cursor: pointer;
         font-size: 14px;
-      }
-      .navbar-links a:hover,
-      .navbar-links button:hover {
-        background: rgba(255, 255, 255, 0.3);
       }
       .container {
         padding: 30px;
@@ -129,12 +126,16 @@
       }
       .btn-red {
         background: linear-gradient(135deg, #e94560, #c0392b);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
       }
       .btn-orange {
         background: linear-gradient(135deg, #ff9800, #e65100);
-      }
-      .btn-red,
-      .btn-orange {
         color: white;
         border: none;
         padding: 6px 12px;
@@ -149,7 +150,7 @@
         margin-top: 15px;
       }
       th {
-        background: linear-gradient(135deg, #58659e, #765499);
+        background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
         padding: 12px 15px;
         text-align: left;
@@ -197,6 +198,9 @@
         .btn {
           width: 100%;
           margin-top: 5px;
+        }
+        #map {
+          height: 250px;
         }
       }
       body.dark {
@@ -372,15 +376,8 @@
               b.status === "active"
                 ? `<span class="badge-active">✅ Active</span>`
                 : `<span class="badge-inactive">❌ Inactive</span>`;
-            document.getElementById("busTable").innerHTML += `<tr>
-                    <td>${b.bus_number}</td>
-                    <td>${b.bus_name || "N/A"}</td>
-                    <td>${b.total_seats}</td>
-                    <td>${badge}</td>
-                    <td>
-                        <button class="btn-orange" onclick="toggleBus(${b.id},'${b.status}')">${b.status === "active" ? "⏸ Deactivate" : "▶ Activate"}</button>
-                        <button class="btn-red" onclick="deleteBus(${b.id})">🗑 Remove</button>
-                    </td></tr>`;
+            document.getElementById("busTable").innerHTML +=
+              `<tr><td>${b.bus_number}</td><td>${b.bus_name || "N/A"}</td><td>${b.total_seats}</td><td>${badge}</td><td><button class="btn-orange" onclick="toggleBus(${b.id},'${b.status}')">${b.status === "active" ? "⏸ Deactivate" : "▶ Activate"}</button> <button class="btn-red" onclick="deleteBus(${b.id})">🗑 Remove</button></td></tr>`;
             document.getElementById("bus_id").innerHTML +=
               `<option value="${b.id}">${b.bus_number}</option>`;
             document.getElementById("route_bus_id").innerHTML +=
@@ -394,9 +391,8 @@
         .then((r) => r.json())
         .then((data) => {
           data.forEach((r) => {
-            document.getElementById("routeTable").innerHTML += `<tr>
-                    <td>${r.route_name}</td><td>${r.start_point}</td><td>${r.end_point}</td><td>${r.bus_number || "N/A"}</td>
-                    <td><button class="btn-red" onclick="deleteRoute(${r.id})">🗑 Remove</button></td></tr>`;
+            document.getElementById("routeTable").innerHTML +=
+              `<tr><td>${r.route_name}</td><td>${r.start_point}</td><td>${r.end_point}</td><td>${r.bus_number || "N/A"}</td><td><button class="btn-red" onclick="deleteRoute(${r.id})">🗑 Remove</button></td></tr>`;
           });
         });
 
@@ -407,9 +403,8 @@
           data.forEach((d) => {
             document.getElementById("driver_id").innerHTML +=
               `<option value="${d.id}">${d.name}</option>`;
-            document.getElementById("driverTable").innerHTML += `<tr>
-                    <td>${d.name}</td><td>${d.bus || "Not Assigned"}</td>
-                    <td><button class="btn-red" onclick="removeDriver(${d.id})">🗑 Remove</button></td></tr>`;
+            document.getElementById("driverTable").innerHTML +=
+              `<tr><td>${d.name}</td><td>${d.bus || "Not Assigned"}</td><td><button class="btn-red" onclick="removeDriver(${d.id})">🗑 Remove</button></td></tr>`;
           });
         });
 
@@ -417,9 +412,8 @@
         .then((r) => r.json())
         .then((data) => {
           data.forEach((s) => {
-            document.getElementById("scheduleTable").innerHTML += `<tr>
-                    <td>${s.bus_number}</td><td>${s.departure}</td><td>${s.arrival}</td><td>${s.days}</td>
-                    <td><button class="btn-red" onclick="deleteSchedule(${s.id})">🗑 Remove</button></td></tr>`;
+            document.getElementById("scheduleTable").innerHTML +=
+              `<tr><td>${s.bus_number}</td><td>${s.departure}</td><td>${s.arrival}</td><td>${s.days}</td><td><button class="btn-red" onclick="deleteSchedule(${s.id})">🗑 Remove</button></td></tr>`;
           });
         });
 
@@ -433,7 +427,6 @@
           body: JSON.stringify({ bus_number, bus_name, total_seats }),
         }).then(() => location.reload());
       }
-
       function addRoute() {
         var route_name = document.getElementById("route_name").value;
         var start_point = document.getElementById("start_point").value;
@@ -445,7 +438,6 @@
           body: JSON.stringify({ route_name, start_point, end_point, bus_id }),
         }).then(() => location.reload());
       }
-
       function assignDriver() {
         var driver_id = document.getElementById("driver_id").value;
         var bus_id = document.getElementById("bus_id").value;
@@ -455,7 +447,6 @@
           body: JSON.stringify({ driver_id, bus_id }),
         }).then(() => location.reload());
       }
-
       function deleteBus(id) {
         if (confirm("Delete this bus?")) {
           fetch("/delete_bus", {
@@ -465,7 +456,6 @@
           }).then(() => location.reload());
         }
       }
-
       function toggleBus(id, status) {
         var new_status = status === "active" ? "inactive" : "active";
         fetch("/toggle_bus", {
@@ -474,7 +464,6 @@
           body: JSON.stringify({ id, status: new_status }),
         }).then(() => location.reload());
       }
-
       function deleteRoute(id) {
         if (confirm("Delete this route?")) {
           fetch("/delete_route", {
@@ -484,7 +473,6 @@
           }).then(() => location.reload());
         }
       }
-
       function removeDriver(id) {
         if (confirm("Remove this driver?")) {
           fetch("/remove_driver", {
@@ -494,7 +482,6 @@
           }).then(() => location.reload());
         }
       }
-
       function addSchedule() {
         var bus_id = document.getElementById("schedule_bus_id").value;
         var departure_time = document.getElementById("departure_time").value;
@@ -506,7 +493,6 @@
           body: JSON.stringify({ bus_id, departure_time, arrival_time, days }),
         }).then(() => location.reload());
       }
-
       function deleteSchedule(id) {
         if (confirm("Delete schedule?")) {
           fetch("/delete_schedule", {
