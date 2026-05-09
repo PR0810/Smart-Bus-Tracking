@@ -210,26 +210,18 @@
         display: flex;
         gap: 10px;
         align-items: center;
+        flex-wrap: wrap;
       }
       .passenger-row input {
         flex: 1;
-        padding: 10px 15px;
-        border: 2px solid #eee;
-        border-radius: 12px;
-        font-size: 15px;
+        min-width: 100px;
+      }
+      .passenger-row button {
+        white-space: nowrap;
       }
       .passenger-row input:focus {
         border-color: #667eea;
         outline: none;
-      }
-      .passenger-row button {
-        padding: 10px 20px;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-weight: 700;
       }
 
       .btn-start {
@@ -351,12 +343,45 @@
           opacity: 0.5;
         }
       }
+      body.dark {
+        background: #1a1a2e;
+        color: white;
+      }
+      body.dark .toggle-card,
+      body.dark .info-card,
+      body.dark .passenger-card,
+      body.dark .schedule-section {
+        background: #16213e;
+        color: white;
+      }
+      body.dark .bottom-nav {
+        background: #16213e;
+      }
     </style>
   </head>
   <body>
     <div class="navbar">
-      <span>🚌 Driver Panel</span>
-      <a href="/profile">⚙️</a>
+      <a href="javascript:history.back()">←</a>
+      <h1 style="position: absolute; left: 50%; transform: translateX(-50%)">
+        Driver Dashboard
+      </h1>
+      <div style="display: flex; gap: 8px">
+        <button
+          onclick="toggleDark()"
+          id="darkBtn"
+          style="
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+          "
+        >
+          🌙
+        </button>
+        <a href="/logout">Logout</a>
+      </div>
     </div>
 
     <div class="hero">
@@ -553,6 +578,16 @@
         })
           .then((r) => r.json())
           .then(() => location.reload());
+      }
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+        var isDark = document.body.classList.contains("dark");
+        document.getElementById("darkBtn").innerText = isDark ? "☀️" : "🌙";
+        localStorage.setItem("darkMode", isDark);
+      }
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+        document.getElementById("darkBtn").innerText = "☀️";
       }
     </script>
   </body>
