@@ -3,6 +3,7 @@
   <head>
     <title>Bus Tracking Login</title>
     <link rel="icon" type="image/png" href="/static/bus.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
         margin: 0;
@@ -10,44 +11,22 @@
         box-sizing: border-box;
       }
       body {
-        font-family: "Arial", sans-serif;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        height: 100vh;
-        animation: bgAnim 5s ease infinite alternate;
+        justify-content: center;
+        padding: 20px;
       }
-      @keyframes bgAnim {
-        0% {
-          background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-        100% {
-          background: linear-gradient(135deg, #764ba2, #667eea);
-        }
-      }
-      .login-box {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        width: 380px;
-        animation: slideUp 0.5s ease;
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .logo {
+      .top-logo {
         text-align: center;
-        font-size: 50px;
-        margin-bottom: 10px;
+        margin-bottom: 25px;
+        color: white;
+      }
+      .top-logo .bus-icon {
+        font-size: 60px;
         animation: bounce 2s infinite;
       }
       @keyframes bounce {
@@ -59,186 +38,238 @@
           transform: translateY(-10px);
         }
       }
-      h2 {
-        text-align: center;
+      .top-logo h1 {
+        font-size: 24px;
+        margin-top: 10px;
+      }
+      .top-logo p {
+        font-size: 14px;
+        opacity: 0.85;
+        margin-top: 5px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px 25px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      }
+      .card h2 {
         color: #333;
         font-size: 22px;
+        margin-bottom: 5px;
+      }
+      .card p {
+        color: #999;
+        font-size: 14px;
         margin-bottom: 25px;
       }
+
       .input-group {
         position: relative;
-        margin: 12px 0;
+        margin-bottom: 15px;
+      }
+      .input-group .icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
       }
       .input-group input {
         width: 100%;
-        padding: 12px 15px 12px 40px;
+        padding: 14px 14px 14px 44px;
         border: 2px solid #eee;
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 15px;
         transition: 0.3s;
       }
       .input-group input:focus {
         border-color: #667eea;
         outline: none;
-        box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       }
-      .input-group span {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 18px;
+      .input-group input.valid {
+        border-color: #4caf50;
       }
-      .remember {
+      .input-group input.invalid {
+        border-color: #ef5350;
+      }
+
+      .remember-row {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: 8px;
-        margin: 10px 0;
-        color: #666;
+        margin-bottom: 20px;
         font-size: 14px;
       }
-      .remember input {
-        width: auto;
+      .remember-row label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #666;
+        cursor: pointer;
       }
-      button {
+      .remember-row a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      .btn {
         width: 100%;
-        padding: 13px;
-        margin-top: 15px;
+        padding: 15px;
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
         border: none;
-        border-radius: 10px;
-        cursor: pointer;
+        border-radius: 12px;
         font-size: 16px;
-        font-weight: bold;
+        font-weight: 700;
+        cursor: pointer;
         transition: 0.3s;
       }
-      button:hover {
-        transform: scale(1.02);
-        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+      .btn:hover {
+        transform: scale(1.01);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
       }
-      .links {
+
+      .divider {
         text-align: center;
-        margin-top: 15px;
+        color: #ccc;
+        margin: 20px 0;
+        font-size: 13px;
       }
-      .links a {
-        color: #667eea;
-        text-decoration: none;
+
+      .register-link {
+        text-align: center;
         font-size: 14px;
-        margin: 0 10px;
+        color: #666;
       }
-      .links a:hover {
-        text-decoration: underline;
+      .register-link a {
+        color: #667eea;
+        font-weight: 700;
+        text-decoration: none;
       }
+
       .error {
-        color: red;
+        color: #ef5350;
         text-align: center;
         font-size: 14px;
         margin-top: 10px;
       }
-      .input-group input.invalid {
-        border-color: red;
+
+      #lockTimer {
+        background: #fff3e0;
+        border: 1px solid #ffcc02;
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
+        color: #e65100;
+        margin-top: 10px;
+        font-weight: 600;
       }
-      .input-group input.valid {
-        border-color: green;
-      }
-      @media (max-width: 768px) {
-        .login-box {
-          width: 90%;
-          padding: 25px;
-        }
+
+      .footer {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        margin-top: 20px;
+        text-align: center;
       }
     </style>
   </head>
   <body>
-    <div class="login-box">
-      <!-- <div class="logo"></div> -->
-      <h2>Smart Bus Tracking</h2>
+    <div class="top-logo">
+      <div class="bus-icon">🚌</div>
+      <h1>Smart Bus Tracking</h1>
+      <p>Track your bus in real-time</p>
+    </div>
+
+    <div class="card">
+      <h2>Welcome Back! 👋</h2>
+      <p>Sign in to continue</p>
+
       <form action="/login" method="POST" onsubmit="return validate();">
         <div class="input-group">
-          <span>✉️</span>
+          <span class="icon">✉️</span>
           <input
             type="email"
             name="email"
             id="email"
-            placeholder="Enter Email"
+            placeholder="Enter your email"
             oninput="validateEmail()"
           />
         </div>
         <div class="input-group">
-          <span>🔒</span>
+          <span class="icon">🔒</span>
           <input
             type="password"
             name="password"
             id="password"
-            placeholder="Enter Password"
+            placeholder="Enter your password"
             oninput="validatePassword()"
           />
         </div>
-        <div class="remember">
-          <input type="checkbox" id="remember" name="remember" /> Remember Me
+
+        <div class="remember-row">
+          <label><input type="checkbox" name="remember" /> Remember me</label>
+          <a href="/forgot_password">Forgot Password?</a>
         </div>
-        <button type="submit" id="loginBtn">Login →</button>
+
+        <button type="submit" class="btn" id="loginBtn">Sign In →</button>
       </form>
+
       {% if error %}
       <p class="error">❌ {{ error }}</p>
       {% endif %} {% if lockout %}
-      <div style="text-align: center; color: red; margin-top: 10px">
-        🔒 Account locked! Wait <span id="countdown">180</span> seconds
+      <div id="lockTimer">
+        🔒 Too many attempts! Wait <span id="countdown">180</span>s
+        <script>
+          var time = 180;
+          document.getElementById("loginBtn").disabled = true;
+          document.getElementById("email").disabled = true;
+          document.getElementById("password").disabled = true;
+          var t = setInterval(function () {
+            time--;
+            document.getElementById("countdown").innerText = time;
+            if (time <= 0) {
+              clearInterval(t);
+              location.reload();
+            }
+          }, 1000);
+        </script>
       </div>
-      <script>
-        document.getElementById("loginBtn").disabled = true;
-        document.getElementById("email").disabled = true;
-        document.getElementById("password").disabled = true;
-        var time = 180;
-        var timer = setInterval(function () {
-          time--;
-          document.getElementById("countdown").innerText = time;
-          if (time <= 0) {
-            clearInterval(timer);
-            location.reload();
-          }
-        }, 1000);
-      </script>
       {% endif %}
-      <div class="links">
-        <a href="/forgot_password">Forgot Password?</a>
-        <a href="/register">Register</a>
+
+      <div class="divider">— OR —</div>
+      <div class="register-link">
+        Don't have an account? <a href="/register">Register here</a>
       </div>
     </div>
 
+    <p class="footer">© 2026 Smart Bus Tracking System</p>
+
     <script>
       function validateEmail() {
-        var email = document.getElementById("email");
+        var e = document.getElementById("email");
         var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (re.test(email.value)) {
-          email.classList.add("valid");
-          email.classList.remove("invalid");
-        } else {
-          email.classList.add("invalid");
-          email.classList.remove("valid");
-        }
+        e.classList.toggle("valid", re.test(e.value));
+        e.classList.toggle("invalid", !re.test(e.value) && e.value.length > 0);
       }
-
       function validatePassword() {
-        var pass = document.getElementById("password");
-        if (pass.value.length >= 4) {
-          pass.classList.add("valid");
-          pass.classList.remove("invalid");
-        } else {
-          pass.classList.add("invalid");
-          pass.classList.remove("valid");
-        }
+        var p = document.getElementById("password");
+        p.classList.toggle("valid", p.value.length >= 4);
+        p.classList.toggle("invalid", p.value.length > 0 && p.value.length < 4);
       }
-
       function validate() {
-        var email = document.getElementById("email").value;
-        var pass = document.getElementById("password").value;
-        if (!email || !pass) {
+        if (
+          !document.getElementById("email").value ||
+          !document.getElementById("password").value
+        ) {
           alert("Please fill all fields!");
           return false;
         }
-        document.getElementById("loginBtn").innerText = "Login";
+        document.getElementById("loginBtn").innerText = "Signing in...";
         return true;
       }
     </script>
