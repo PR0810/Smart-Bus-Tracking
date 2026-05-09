@@ -409,7 +409,21 @@
     </div>
 
     <div id="map"></div>
-
+    <div
+      style="
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        margin: 0 10px 20px;
+        padding: 20px;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+      "
+    >
+      <p>🚌 Track your bus in real-time</p>
+      <p style="font-size: 12px; opacity: 0.8; margin-top: 5px">
+        Search a bus route to get started
+      </p>
+    </div>
     <script>
       var map = L.map("map").setView([20.5937, 78.9629], 5);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
