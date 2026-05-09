@@ -186,16 +186,20 @@
       }
       @media (max-width: 768px) {
         .navbar {
-          padding: 5px 10px;
+          padding: 12px 15px;
         }
         .navbar h1 {
           font-size: 16px;
         }
+        .navbar-links a span,
+        .navbar-links button span {
+          display: none;
+        }
         .navbar-links a,
         .navbar-links button {
-          padding: 6px 10px;
-          font-size: 12px;
-          margin-left: 5px;
+          padding: 8px;
+          font-size: 18px;
+          margin-left: 3px;
         }
         .container {
           padding: 10px;
@@ -216,12 +220,6 @@
         .section {
           padding: 15px;
         }
-        .section h3 {
-          font-size: 15px;
-        }
-        .form-row {
-          flex-direction: column;
-        }
         input,
         select {
           width: 100%;
@@ -239,11 +237,6 @@
         th,
         td {
           padding: 8px 6px;
-        }
-        .btn-red,
-        .btn-orange {
-          padding: 5px 8px;
-          font-size: 11px;
         }
       }
       body.dark {
@@ -277,10 +270,12 @@
     <div class="navbar">
       <h1>🚌 Admin Dashboard</h1>
       <div class="navbar-links">
-        <a href="/bus_history">📍 History</a>
-        <a href="/profile">👤 Profile</a>
-        <button onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
-        <a href="/logout">Logout</a>
+        <a href="/bus_history"><span>📍</span> History</a>
+        <a href="/profile"><span>👤</span> Profile</a>
+        <button onclick="toggleDark()" id="darkBtn">
+          <span>🌙</span> Dark
+        </button>
+        <a href="/logout"><span>🚪</span> Logout</a>
       </div>
     </div>
 
