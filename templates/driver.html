@@ -198,7 +198,7 @@
         margin: 0 15px 15px;
         background: white;
         border-radius: 16px;
-        padding: 15px 20px;
+        padding: 30px 40px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
       }
       .passenger-card h4 {
@@ -361,10 +361,7 @@
   </head>
   <body>
     <div class="navbar">
-      <a href="javascript:history.back()">←</a>
-      <h1 style="position: absolute; left: 50%; transform: translateX(-50%)">
-        Driver Dashboard
-      </h1>
+      <h1>🚌 Driver Panel</h1>
       <div style="display: flex; gap: 8px">
         <button
           onclick="toggleDark()"
@@ -380,7 +377,17 @@
         >
           🌙
         </button>
-        <a href="/logout">Logout</a>
+        <a
+          href="/logout"
+          style="
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+          "
+          >Logout</a
+        >
       </div>
     </div>
 
@@ -466,7 +473,7 @@
       <a href="#map"><span>📍</span>Location</a>
       <a href="#routeCard"><span>🗺️</span>Route</a>
       <a href="/bus_history"><span>📊</span>History</a>
-      <a href="/profile"><span>👤</span>Profile</a>
+      <a href="/profile"><span>⚙️</span>Setting</a>
     </div>
 
     <script>
