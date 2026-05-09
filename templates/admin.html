@@ -299,20 +299,7 @@
   <body>
     <div class="navbar">
       <div style="width: 80px">
-        <button
-          onclick="toggleDark()"
-          id="darkBtn"
-          style="
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-          "
-        >
-          🌙
-        </button>
+        <button id="darkBtn" class="btn" onclick="toggleDark()">🌙 Dark</button>
       </div>
       <h1>🚌 Admin Dashboard</h1>
       <div style="width: 80px; text-align: right">
@@ -391,7 +378,7 @@
         </table>
       </div>
 
-      <div class="section">
+      <div class="section" id="driverSection">
         <h3>👨‍✈️ Assign Driver to Bus</h3>
         <div class="form-row">
           <select id="driver_id">
@@ -607,7 +594,7 @@
     <div class="bottom-nav">
       <a href="/admin" class="active"><span>🏠</span>Home</a>
       <a href="/bus_history"><span>🚌</span>Buses</a>
-      <a href="/profile"><span>👨‍✈️</span>Drivers</a>
+      <a href="/admin#driverSection"><span>👨‍✈️</span>Drivers</a>
       <a href="/admin"><span>📊</span>Analytics</a>
       <a href="/profile"><span>⚙️</span>Settings</a>
     </div>

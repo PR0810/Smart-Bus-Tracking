@@ -1,8 +1,9 @@
 <!doctype html>
 <html>
   <head>
+    <title>My Profile</title>
     <link rel="icon" type="image/png" href="/static/bus.png" />
-    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
         margin: 0;
@@ -12,48 +13,112 @@
       body {
         font-family: Arial, sans-serif;
         background: #f0f2f5;
+        min-height: 100vh;
       }
       .navbar {
         background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 15px 30px;
+        padding: 15px 20px;
         color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
-      .navbar h1 {
-        font-size: 22px;
-      }
       .navbar a {
         color: white;
         text-decoration: none;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 8px 15px;
-        border-radius: 8px;
+        font-size: 20px;
       }
-      .container {
+      .navbar h1 {
+        font-size: 18px;
+      }
+
+      .profile-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 30px 20px 50px;
+        text-align: center;
+        color: white;
+      }
+      .avatar {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
         display: flex;
+        align-items: center;
         justify-content: center;
-        padding: 40px;
+        font-size: 40px;
+        margin: 0 auto 15px;
+        border: 3px solid white;
       }
-      .box {
-        background: white;
-        padding: 40px;
+      .profile-header h2 {
+        font-size: 22px;
+      }
+      .profile-header p {
+        opacity: 0.85;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+      .role-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 15px;
         border-radius: 20px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        width: 400px;
+        font-size: 13px;
+        margin-top: 8px;
       }
-      h3 {
+
+      .card {
+        background: white;
+        margin: -20px 15px 15px;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f2f5;
+      }
+      .info-item:last-child {
+        border-bottom: none;
+      }
+      .info-icon {
+        font-size: 22px;
+        width: 35px;
+        text-align: center;
+      }
+      .info-text p {
+        font-size: 12px;
+        color: #999;
+      }
+      .info-text h4 {
+        font-size: 15px;
+        color: #333;
+        margin-top: 2px;
+      }
+
+      .form-card {
+        background: white;
+        margin: 0 15px 15px;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+      .form-card h3 {
         color: #667eea;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        font-size: 16px;
       }
       input {
         width: 100%;
         padding: 12px 15px;
-        margin: 8px 0;
         border: 2px solid #eee;
         border-radius: 10px;
         font-size: 15px;
+        margin-bottom: 12px;
+        transition: 0.3s;
       }
       input:focus {
         border-color: #667eea;
@@ -61,18 +126,23 @@
       }
       button {
         width: 100%;
-        padding: 13px;
-        margin-top: 15px;
+        padding: 14px;
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         cursor: pointer;
         font-size: 16px;
         font-weight: bold;
       }
       .success {
-        color: green;
+        color: #4caf50;
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      .error-msg {
+        color: red;
         text-align: center;
         margin-top: 10px;
       }
@@ -80,43 +150,66 @@
   </head>
   <body>
     <div class="navbar">
-      <h1>👤 My Profile</h1>
-      <a href="/logout">Logout</a>
+      <a href="javascript:history.back()">←</a>
+      <h1>My Profile</h1>
+      <a href="/logout">🚪</a>
     </div>
-    <div class="container">
-      <div class="box">
-        <h3>Update Profile</h3>
-        <div
-          style="
-            background: #f0f2f5;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-          "
-        >
-          <p>👤 <b>Name:</b> {{ name }}</p>
-          <p>✉️ <b>Email:</b> {{ email }}</p>
-          <p>🔑 <b>Role:</b> {{ role }}</p>
+
+    <div class="profile-header">
+      <div class="avatar">👤</div>
+      <h2>{{ name }}</h2>
+      <p>{{ email }}</p>
+      <span class="role-badge">{{ role | capitalize }}</span>
+    </div>
+
+    <div class="card">
+      <div class="info-item">
+        <span class="info-icon">👤</span>
+        <div class="info-text">
+          <p>Full Name</p>
+          <h4>{{ name }}</h4>
         </div>
-        <form action="/update_profile" method="POST">
-          <input type="text" name="name" placeholder="👤 New Name" />
-          <input
-            type="password"
-            name="old_password"
-            placeholder="🔒 Current Password"
-            required
-          />
-          <input
-            type="password"
-            name="new_password"
-            placeholder="🔑 New Password (optional)"
-          />
-          <button type="submit">Update →</button>
-        </form>
-        {% if msg %}
-        <p class="success">{{ msg }}</p>
-        {% endif %}
       </div>
+      <div class="info-item">
+        <span class="info-icon">✉️</span>
+        <div class="info-text">
+          <p>Email</p>
+          <h4>{{ email }}</h4>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🔑</span>
+        <div class="info-text">
+          <p>Role</p>
+          <h4>{{ role | capitalize }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>✏️ Update Profile</h3>
+      <form action="/update_profile" method="POST">
+        <input type="text" name="name" placeholder="👤 New Name" />
+        <input
+          type="password"
+          name="old_password"
+          placeholder="🔒 Current Password"
+          required
+        />
+        <input
+          type="password"
+          name="new_password"
+          placeholder="🔑 New Password (optional)"
+        />
+        <button type="submit">Update Profile →</button>
+      </form>
+      {% if msg %}
+      <p
+        class="{% if msg == 'Profile Updated!' %}success{% else %}error-msg{% endif %}"
+      >
+        {{ msg }}
+      </p>
+      {% endif %}
     </div>
   </body>
 </html>
