@@ -1,8 +1,9 @@
 <!doctype html>
 <html>
   <head>
+    <title>Register - Bus Tracking</title>
     <link rel="icon" type="image/png" href="/static/bus.png" />
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
         margin: 0;
@@ -10,91 +11,215 @@
         box-sizing: border-box;
       }
       body {
-        font-family: "Arial", sans-serif;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        height: 100vh;
+        justify-content: center;
+        padding: 20px;
       }
-      .box {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        width: 380px;
-      }
-      h2 {
+      .top-logo {
         text-align: center;
+        margin-bottom: 25px;
+        color: white;
+      }
+      .top-logo .bus-icon {
+        font-size: 50px;
+      }
+      .top-logo h1 {
+        font-size: 22px;
+        margin-top: 8px;
+      }
+      .top-logo p {
+        font-size: 13px;
+        opacity: 0.85;
+        margin-top: 5px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px 25px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      }
+      .card h2 {
         color: #333;
+        font-size: 22px;
+        margin-bottom: 5px;
+      }
+      .card p {
+        color: #999;
+        font-size: 14px;
         margin-bottom: 25px;
       }
-      input,
-      select {
-        width: 100%;
-        padding: 12px 15px;
-        margin: 8px 0;
-        border: 2px solid #eee;
-        border-radius: 10px;
-        font-size: 15px;
+
+      .input-group {
+        position: relative;
+        margin-bottom: 15px;
       }
-      input:focus,
-      select:focus {
+      .input-group .icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+      }
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 14px 14px 14px 44px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        font-size: 15px;
+        transition: 0.3s;
+        appearance: none;
+      }
+      .input-group input:focus,
+      .input-group select:focus {
         border-color: #667eea;
         outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       }
-      button {
+
+      .role-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .role-btn {
+        padding: 12px 5px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 13px;
+        color: #666;
+      }
+      .role-btn .role-icon {
+        font-size: 24px;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .role-btn.selected {
+        border-color: #667eea;
+        background: #f0f0ff;
+        color: #667eea;
+        font-weight: 700;
+      }
+
+      .btn {
         width: 100%;
-        padding: 13px;
-        margin-top: 15px;
+        padding: 15px;
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
         border: none;
-        border-radius: 10px;
-        cursor: pointer;
+        border-radius: 12px;
         font-size: 16px;
-        font-weight: bold;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
       }
-      button:hover {
-        transform: scale(1.02);
+      .btn:hover {
+        transform: scale(1.01);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
       }
-      p {
+
+      .login-link {
         text-align: center;
-        margin-top: 15px;
+        font-size: 14px;
         color: #666;
+        margin-top: 20px;
       }
-      a {
+      .login-link a {
         color: #667eea;
+        font-weight: 700;
         text-decoration: none;
       }
-      @media (max-width: 768px) {
-        .box {
-          width: 90%;
-          padding: 25px;
-        }
+
+      .footer {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        margin-top: 20px;
+        text-align: center;
       }
     </style>
   </head>
   <body>
-    <div class="box">
-      <h2>🚌 Register</h2>
-      <form action="/register" method="POST">
-        <input type="text" name="name" placeholder="👤 Full Name" required />
-        <input type="email" name="email" placeholder="✉️ Email" required />
-        <input
-          type="password"
-          name="password"
-          placeholder="🔒 Password"
-          required
-        />
-        <select name="role">
-          <option value="passenger">Passenger</option>
-          <option value="driver">Driver</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button type="submit">Register →</button>
-      </form>
-      <p>Already have account? <a href="/login">Login</a></p>
+    <div class="top-logo">
+      <div class="bus-icon">🚌</div>
+      <h1>Create Account</h1>
+      <p>Join Smart Bus Tracking</p>
     </div>
+
+    <div class="card">
+      <h2>Register 👋</h2>
+      <p>Fill in your details to get started</p>
+
+      <form action="/register" method="POST">
+        <div class="input-group">
+          <span class="icon">👤</span>
+          <input type="text" name="name" placeholder="Full Name" required />
+        </div>
+        <div class="input-group">
+          <span class="icon">✉️</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <span class="icon">🔒</span>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+
+        <p style="color: #666; font-size: 13px; margin-bottom: 10px">
+          Select your role:
+        </p>
+        <div class="role-grid">
+          <div class="role-btn" onclick="selectRole('passenger', this)">
+            <span class="role-icon">👤</span>Passenger
+          </div>
+          <div class="role-btn" onclick="selectRole('driver', this)">
+            <span class="role-icon">🚌</span>Driver
+          </div>
+          <div class="role-btn" onclick="selectRole('admin', this)">
+            <span class="role-icon">👨‍💼</span>Admin
+          </div>
+        </div>
+        <input type="hidden" name="role" id="roleInput" value="passenger" />
+
+        <button type="submit" class="btn">Create Account →</button>
+      </form>
+
+      <div class="login-link">
+        Already have an account? <a href="/login">Sign In</a>
+      </div>
+    </div>
+
+    <p class="footer">© 2026 Smart Bus Tracking System</p>
+
+    <script>
+      function selectRole(role, el) {
+        document
+          .querySelectorAll(".role-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        el.classList.add("selected");
+        document.getElementById("roleInput").value = role;
+      }
+      document.querySelector(".role-btn").classList.add("selected");
+    </script>
   </body>
 </html>
