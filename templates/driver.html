@@ -22,7 +22,7 @@
       }
 
       .navbar {
-        background: #f7941d;
+        background: #667eea;
         padding: 15px 20px;
         color: white;
         display: flex;
@@ -40,12 +40,12 @@
       }
 
       .hero {
-        background: #fff8f0;
+        background: #f0f2f5;
         padding: 15px 20px;
         text-align: center;
       }
       .hero h2 {
-        color: #f7941d;
+        color: #667eea;
         font-size: 20px;
         font-weight: 700;
       }
@@ -86,13 +86,13 @@
         background: #fff3e0;
       }
       .stat-orange h2 {
-        color: #e65100;
+        color: 764ba2;
       }
 
       .location-card {
         margin: 0 15px 15px;
         background: #fffde7;
-        border: 2px dashed #f7941d;
+        border: 2px dashed#667eea;
         border-radius: 16px;
         padding: 20px;
         text-align: center;
@@ -101,12 +101,12 @@
         font-size: 40px;
       }
       .location-card h3 {
-        color: #e65100;
+        color: #764ba2;
         font-size: 16px;
         margin-top: 10px;
       }
       .location-card p {
-        color: #f7941d;
+        color: #667eea;
         font-size: 13px;
         margin-top: 5px;
       }
@@ -186,7 +186,7 @@
       }
       .badge-percent {
         background: #fff3e0;
-        color: #e65100;
+        color: 764ba2;
         padding: 5px 12px;
         border-radius: 20px;
         font-size: 12px;
@@ -219,12 +219,12 @@
         font-size: 15px;
       }
       .passenger-row input:focus {
-        border-color: #f7941d;
+        border-color: #667eea;
         outline: none;
       }
       .passenger-row button {
         padding: 10px 20px;
-        background: #f7941d;
+        background: #667eea;
         color: white;
         border: none;
         border-radius: 12px;
@@ -236,7 +236,7 @@
         margin: 0 15px 12px;
         width: calc(100% - 30px);
         padding: 16px;
-        background: #f7941d;
+        background: #667eea;
         color: white;
         border: none;
         border-radius: 16px;
@@ -280,7 +280,7 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
       }
       .schedule-section h4 {
-        color: #f7941d;
+        color: #667eea;
         font-size: 15px;
         font-weight: 700;
         margin-bottom: 12px;
@@ -291,7 +291,7 @@
         font-size: 13px;
       }
       th {
-        background: #f7941d;
+        background: #667eea;
         color: white;
         padding: 10px 8px;
         text-align: center;
@@ -324,7 +324,7 @@
         gap: 3px;
       }
       .bottom-nav a.active {
-        color: #f7941d;
+        color: #667eea;
       }
       .bottom-nav span {
         font-size: 22px;
@@ -468,9 +468,7 @@
               (data.current_passengers / data.total_seats) * 100,
             );
             document.getElementById("busNo").innerText = data.bus;
-            document.getElementById("routeCode").innerText = data.from
-              ? data.from.substring(0, 3).toUpperCase()
-              : "-";
+            document.getElementById("routeCode").innerText = data.route || "-";
             document.getElementById("routeInfo").innerText =
               "🚌 " + data.bus + " (" + (data.bus_name || "") + ")";
             document.getElementById("routeDetail").innerText =
