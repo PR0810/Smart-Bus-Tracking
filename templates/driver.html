@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Driver Dashboard</title>
+    <title>Driver Panel</title>
     <link rel="icon" type="image/png" href="/static/bus.png" />
     <link
       rel="stylesheet"
@@ -9,6 +9,7 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
         margin: 0;
@@ -17,163 +18,318 @@
       }
       body {
         font-family: Arial, sans-serif;
-        background: #f0f2f5;
+        background: #f5f6fa;
       }
+
       .navbar {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 15px 30px;
+        background: #f7941d;
+        padding: 15px 20px;
         color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       }
       .navbar h1 {
-        font-size: 22px;
+        font-size: 18px;
+        font-weight: 700;
       }
-      .navbar-links a,
-      .navbar-links button {
+      .navbar a {
         color: white;
         text-decoration: none;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 8px 15px;
-        border-radius: 8px;
-        margin-left: 10px;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
+        font-size: 22px;
       }
-      .container {
-        padding: 20px 30px;
+
+      .hero {
+        background: #fff8f0;
+        padding: 15px 20px;
+        text-align: center;
       }
-      .bus-info-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        margin-bottom: 20px;
-        animation: fadeIn 0.5s ease;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .bus-info-header {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 20px 25px;
-        color: white;
-      }
-      .bus-info-header h3 {
+      .hero h2 {
+        color: #f7941d;
         font-size: 20px;
-        margin-bottom: 5px;
+        font-weight: 700;
       }
-      .bus-info-header p {
-        opacity: 0.85;
-        font-size: 14px;
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding: 15px;
       }
-      .bus-info-body {
-        padding: 20px 25px;
+      .stat-card {
+        border-radius: 16px;
+        padding: 15px 10px;
+        text-align: center;
       }
-      .info-row {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-bottom: 15px;
+      .stat-card h2 {
+        font-size: 22px;
+        font-weight: 800;
       }
-      .info-badge {
-        background: #f0f2f5;
-        padding: 10px 15px;
-        border-radius: 10px;
-        font-size: 14px;
-        color: #555;
-        border-left: 4px solid #667eea;
+      .stat-card p {
+        font-size: 11px;
+        margin-top: 3px;
+        color: #666;
       }
-      .passenger-update {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      .stat-green {
+        background: #e8f5e9;
+      }
+      .stat-green h2 {
+        color: #2e7d32;
+      }
+      .stat-blue {
+        background: #e3f2fd;
+      }
+      .stat-blue h2 {
+        color: #1565c0;
+      }
+      .stat-orange {
+        background: #fff3e0;
+      }
+      .stat-orange h2 {
+        color: #e65100;
+      }
+
+      .location-card {
+        margin: 0 15px 15px;
+        background: #fffde7;
+        border: 2px dashed #f7941d;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+      }
+      .location-card .pin {
+        font-size: 40px;
+      }
+      .location-card h3 {
+        color: #e65100;
+        font-size: 16px;
         margin-top: 10px;
       }
-      .passenger-update input {
-        padding: 10px;
-        border: 2px solid #eee;
-        border-radius: 10px;
+      .location-card p {
+        color: #f7941d;
+        font-size: 13px;
+        margin-top: 5px;
+      }
+
+      .toggle-card {
+        margin: 0 15px 15px;
+        background: white;
+        border-radius: 16px;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      .toggle-card span {
         font-size: 15px;
-        width: 100px;
+        font-weight: 600;
+      }
+      .toggle {
+        width: 55px;
+        height: 28px;
+        background: #ccc;
+        border-radius: 14px;
+        cursor: pointer;
+        position: relative;
         transition: 0.3s;
       }
-      .passenger-update input:focus {
-        border-color: #667eea;
+      .toggle.on {
+        background: #4caf50;
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        background: white;
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        transition: 0.3s;
+      }
+      .toggle.on::after {
+        left: 30px;
+      }
+
+      .info-card {
+        margin: 0 15px 12px;
+        background: white;
+        border-radius: 16px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      .info-card .icon {
+        font-size: 35px;
+      }
+      .info-card-text h4 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #333;
+      }
+      .info-card-text p {
+        font-size: 13px;
+        color: #888;
+        margin-top: 3px;
+      }
+      .badge-active {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-left: auto;
+      }
+      .badge-percent {
+        background: #fff3e0;
+        color: #e65100;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-left: auto;
+      }
+
+      .passenger-card {
+        margin: 0 15px 15px;
+        background: white;
+        border-radius: 16px;
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      .passenger-card h4 {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 10px;
+      }
+      .passenger-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .passenger-row input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        font-size: 15px;
+      }
+      .passenger-row input:focus {
+        border-color: #f7941d;
         outline: none;
       }
-      .btn {
+      .passenger-row button {
         padding: 10px 20px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: #f7941d;
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         cursor: pointer;
-        font-weight: bold;
-        font-size: 14px;
-        transition: 0.3s;
+        font-weight: 700;
       }
-      .btn:hover {
-        transform: scale(1.02);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+
+      .btn-start {
+        margin: 0 15px 12px;
+        width: calc(100% - 30px);
+        padding: 16px;
+        background: #f7941d;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
       }
-      .btn-green {
-        background: linear-gradient(135deg, #4caf50, #2e7d32);
+      .btn-end {
+        margin: 0 15px 15px;
+        width: calc(100% - 30px);
+        padding: 16px;
+        background: #ef5350;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
       }
-      .btn-red {
-        background: linear-gradient(135deg, #e94560, #c0392b);
+
+      .map-section {
+        margin: 0 15px 15px;
       }
-      .controls {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
+      .map-section h4 {
+        color: #888;
+        font-size: 13px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
-      .schedule-card {
+      #map {
+        height: 250px;
+        border-radius: 16px;
+      }
+
+      .schedule-section {
+        margin: 0 15px 80px;
         background: white;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        padding: 20px 25px;
-        margin-bottom: 20px;
+        border-radius: 16px;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
       }
-      .schedule-card h3 {
-        color: #667eea;
-        margin-bottom: 15px;
+      .schedule-section h4 {
+        color: #f7941d;
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 12px;
       }
       table {
         width: 100%;
         border-collapse: collapse;
+        font-size: 13px;
       }
       th {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: #f7941d;
         color: white;
-        padding: 12px;
+        padding: 10px 8px;
         text-align: center;
       }
       td {
-        padding: 10px;
-        border-bottom: 1px solid #f0f2f5;
+        padding: 10px 8px;
+        border-bottom: 1px solid #f5f5f5;
         text-align: center;
-        font-size: 14px;
+        color: #555;
       }
-      tr:hover td {
-        background: #f8f9ff;
+
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: white;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 100;
       }
-      #map {
-        height: 450px;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      .bottom-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 11px;
+        color: #999;
+        text-decoration: none;
+        gap: 3px;
       }
+      .bottom-nav a.active {
+        color: #f7941d;
+      }
+      .bottom-nav span {
+        font-size: 22px;
+      }
+
       .status-dot {
         width: 10px;
         height: 10px;
@@ -195,93 +351,100 @@
           opacity: 0.5;
         }
       }
-      @media (max-width: 768px) {
-        .container {
-          padding: 10px;
-        }
-        .controls {
-          flex-direction: column;
-        }
-        .btn {
-          width: 100%;
-        }
-        #map {
-          height: 300px;
-        }
-      }
-      body.dark {
-        background: #1a1a2e;
-        color: white;
-      }
-      body.dark .bus-info-card,
-      body.dark .schedule-card {
-        background: #16213e;
-      }
-      body.dark .info-badge {
-        background: #0f3460;
-        color: #ccc;
-      }
-      body.dark td {
-        border-color: #333;
-        color: #ccc;
-      }
-      body.dark tr:hover td {
-        background: #0f3460;
-      }
-      body.dark .passenger-update input {
-        background: #0f3460;
-        color: white;
-        border-color: #333;
-      }
     </style>
   </head>
   <body>
     <div class="navbar">
-      <h1>🚌 Driver Dashboard</h1>
-      <div class="navbar-links">
-        <a href="/profile">👤 Profile</a>
-        <button onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
-        <a href="/logout">Logout</a>
+      <span>🚌 Driver Panel</span>
+      <h1 style="position: absolute; left: 50%; transform: translateX(-50%)">
+        Driver Dashboard
+      </h1>
+      <a href="/profile">⚙️</a>
+    </div>
+
+    <div class="hero">
+      <h2>Driver Dashboard</h2>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card stat-green">
+        <h2 id="tripStatus">OFF</h2>
+        <p>Trip Status</p>
+      </div>
+      <div class="stat-card stat-blue">
+        <h2 id="busNo">-</h2>
+        <p>Bus No.</p>
+      </div>
+      <div class="stat-card stat-orange">
+        <h2 id="routeCode">-</h2>
+        <p>Route</p>
       </div>
     </div>
 
-    <div class="container">
-      <div class="bus-info-card">
-        <div class="bus-info-header">
-          <h3>🚌 My Bus Information</h3>
-          <p id="busInfo">Loading...</p>
-        </div>
-        <div class="bus-info-body">
-          <div class="info-row" id="infoRow"></div>
-          <div class="passenger-update">
-            <label>👥 Update Passengers:</label>
-            <input type="number" id="passengerCount" min="0" placeholder="0" />
-            <button class="btn" onclick="updatePassengers()">✅ Update</button>
-          </div>
-        </div>
-      </div>
+    <div class="location-card">
+      <div class="pin">📍</div>
+      <h3>Your Live Location (GPS)</h3>
+      <p id="broadcastStatus">Start tracking to broadcast...</p>
+    </div>
 
-      <div class="controls">
-        <button class="btn btn-green" onclick="startTracking()">
-          <span class="status-dot" id="statusDot"></span>▶ Start Tracking
-        </button>
-        <button class="btn btn-red" onclick="stopTracking()">
-          ⏹ Stop Tracking
-        </button>
-      </div>
+    <div class="toggle-card">
+      <span>📡 Share Live Location</span>
+      <div class="toggle" id="locationToggle" onclick="toggleTracking()"></div>
+    </div>
 
-      <div class="schedule-card">
-        <h3>🕐 My Schedule</h3>
-        <table id="scheduleTable">
-          <tr>
-            <th>🕐 Departure</th>
-            <th>🏁 Arrival</th>
-            <th>📅 Days</th>
-          </tr>
-        </table>
+    <div class="info-card" id="routeCard">
+      <span class="icon">🗺️</span>
+      <div class="info-card-text">
+        <h4 id="routeInfo">Loading route...</h4>
+        <p id="routeDetail">Fetching bus info...</p>
       </div>
+      <span class="badge-active" id="routeStatus">ACTIVE</span>
+    </div>
 
+    <div class="info-card">
+      <span class="icon">👥</span>
+      <div class="info-card-text">
+        <h4>Passengers Onboard</h4>
+        <p id="passengerInfo">Loading...</p>
+      </div>
+      <span class="badge-percent" id="passengerPercent">0%</span>
+    </div>
+
+    <div class="passenger-card">
+      <h4>👥 Update Passengers</h4>
+      <div class="passenger-row">
+        <input type="number" id="passengerCount" min="0" placeholder="0" />
+        <button onclick="updatePassengers()">✅ Update</button>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startTracking()">
+      <span class="status-dot" id="statusDot"></span>▶ Start Tracking
+    </button>
+    <button class="btn-end" onclick="stopTracking()">⏹ Stop Tracking</button>
+
+    <div class="map-section">
+      <h4>Live Map</h4>
       <div id="map"></div>
+    </div>
+
+    <div class="schedule-section">
+      <h4>🕐 My Schedule</h4>
+      <table id="scheduleTable">
+        <tr>
+          <th>Departure</th>
+          <th>Arrival</th>
+          <th>Days</th>
+        </tr>
+      </table>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="/driver" class="active"><span>🏠</span>Home</a>
+      <a href="#map"><span>📍</span>Location</a>
+      <a href="#routeCard"><span>🗺️</span>Route</a>
+      <a href="/bus_history"><span>📊</span>History</a>
+      <a href="/profile"><span>👤</span>Profile</a>
     </div>
 
     <script>
@@ -291,6 +454,7 @@
         map,
       );
       var marker, tracking;
+      var isTracking = false;
 
       fetch("/get_my_bus")
         .then((r) => r.json())
@@ -300,17 +464,30 @@
               0,
               data.total_seats - data.current_passengers,
             );
-            document.getElementById("busInfo").innerHTML =
-              `🚌 ${data.bus} (${data.bus_name || ""})`;
-            document.getElementById("infoRow").innerHTML = `
-                    <div class="info-badge">🛣️ Route: ${data.route || "N/A"}</div>
-                    <div class="info-badge">📍 ${data.from || "N/A"} → ${data.to || "N/A"}</div>
-                    <div class="info-badge">👥 ${data.current_passengers}/${data.total_seats} Passengers</div>
-                    <div class="info-badge">💺 ${seats_left} Seats Left</div>`;
+            var percent = Math.round(
+              (data.current_passengers / data.total_seats) * 100,
+            );
+            document.getElementById("busNo").innerText = data.bus;
+            document.getElementById("routeCode").innerText = data.from
+              ? data.from.substring(0, 3).toUpperCase()
+              : "-";
+            document.getElementById("routeInfo").innerText =
+              "🚌 " + data.bus + " (" + (data.bus_name || "") + ")";
+            document.getElementById("routeDetail").innerText =
+              (data.from || "N/A") + " → " + (data.to || "N/A");
+            document.getElementById("passengerInfo").innerText =
+              "Current load: " +
+              data.current_passengers +
+              " / " +
+              data.total_seats;
+            document.getElementById("passengerPercent").innerText =
+              percent + "%";
             document.getElementById("passengerCount").value =
               data.current_passengers;
           } else {
-            document.getElementById("busInfo").innerHTML = "❌ No bus assigned";
+            document.getElementById("routeInfo").innerText =
+              "❌ No bus assigned";
+            document.getElementById("routeDetail").innerText = "Contact admin";
           }
         });
 
@@ -319,7 +496,7 @@
         .then((data) => {
           if (data.length == 0) {
             document.getElementById("scheduleTable").innerHTML +=
-              '<tr><td colspan="3">No schedule assigned</td></tr>';
+              '<tr><td colspan="3">No schedule</td></tr>';
           }
           data.forEach((s) => {
             document.getElementById("scheduleTable").innerHTML +=
@@ -327,16 +504,27 @@
           });
         });
 
-      function startTracking() {
-        document.getElementById("statusDot").classList.add("active");
+      function toggleTracking() {
+        if (!isTracking) {
+          startTracking();
+        } else {
+          stopTracking();
+        }
+      }
 
-        // Smart interval - moving fast = update fast, slow = update slow
+      function startTracking() {
+        isTracking = true;
+        document.getElementById("statusDot").classList.add("active");
+        document.getElementById("locationToggle").classList.add("on");
+        document.getElementById("tripStatus").innerText = "ON";
+        document.getElementById("broadcastStatus").innerText =
+          "Broadcasting to passengers...";
+
         tracking = setInterval(() => {
           navigator.geolocation.getCurrentPosition(function (pos) {
             var lat = pos.coords.latitude;
             var lng = pos.coords.longitude;
             var speed = pos.coords.speed || 0;
-
             if (marker) {
               marker.setLatLng([lat, lng]);
             } else {
@@ -344,17 +532,21 @@
             }
             map.setView([lat, lng], 15);
             socket.emit("location_update", { lat, lng });
-
-            // Smart interval based on speed
             clearInterval(tracking);
-            var interval = speed > 10 ? 3000 : 10000; // fast=3s, slow=10s
+            var interval = speed > 10 ? 3000 : 10000;
             tracking = setInterval(arguments.callee, interval);
           });
         }, 3000);
       }
+
       function stopTracking() {
+        isTracking = false;
         clearInterval(tracking);
         document.getElementById("statusDot").classList.remove("active");
+        document.getElementById("locationToggle").classList.remove("on");
+        document.getElementById("tripStatus").innerText = "OFF";
+        document.getElementById("broadcastStatus").innerText =
+          "Start tracking to broadcast...";
       }
 
       function updatePassengers() {
@@ -366,19 +558,6 @@
         })
           .then((r) => r.json())
           .then(() => location.reload());
-      }
-
-      function toggleDark() {
-        document.body.classList.toggle("dark");
-        var isDark = document.body.classList.contains("dark");
-        document.getElementById("darkBtn").innerText = isDark
-          ? "☀️ Light"
-          : "🌙 Dark";
-        localStorage.setItem("darkMode", isDark);
-      }
-      if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark");
-        document.getElementById("darkBtn").innerText = "☀️ Light";
       }
     </script>
   </body>
