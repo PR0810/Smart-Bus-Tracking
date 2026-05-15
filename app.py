@@ -13,8 +13,8 @@ chat_cache={}
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from sklearn.linear_model import LinearRegression
 import numpy as np
-import google.generativeai as genai
-genai.configure(api_key=os.environ.get('GEMINI_API_KEY', ''))
+from google import genai
+client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY', ''))
 from flask_mail import Mail, Message
 import random
 import random
@@ -450,7 +450,7 @@ def chatbot():
         for s in schedules:
             schedule_info += f"Bus: {s[0]}, Departure: {s[1]}, Arrival: {s[2]}, Days: {s[3]}\n"
         
-        model = genai.GenerativeModel('gemini-2.5-flash-lite')
+        model = genai.GenerativeModel('gemini-2.0-flash-lite')
         response = model.generate_content(
          f"""You are a bus tracking assistant for a college bus system.
 Available buses and routes:

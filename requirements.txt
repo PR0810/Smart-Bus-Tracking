@@ -6,7 +6,7 @@ flask-mail
 flask-limiter
 bcrypt
 requests
-google-generativeai
+google-genai
 scikit-learn
 numpy
 mysqlclient
