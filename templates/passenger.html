@@ -572,6 +572,12 @@
       }
 
       function startVoice() {
+        function startVoice() {
+          if (!("webkitSpeechRecognition" in window)) {
+            alert("Please use Chrome browser for voice search!");
+            return;
+          }
+        }
         var recognition = new webkitSpeechRecognition();
         recognition.lang = "en-IN";
         recognition.start();
