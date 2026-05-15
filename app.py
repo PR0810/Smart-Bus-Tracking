@@ -14,7 +14,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from sklearn.linear_model import LinearRegression
 import numpy as np
 import google.generativeai as genai
-genai.configure(api_key='AIzaSyBwIVZGFP7NEbPxW3jlgBqZN_S_IJnHutM')
+genai.configure(api_key=os.environ.get('GEMINI_API_KEY', ''))
 from flask_mail import Mail, Message
 import random
 import random
