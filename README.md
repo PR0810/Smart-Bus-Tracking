@@ -74,7 +74,7 @@ A full-stack real-time bus tracking web application built with Flask, MySQL, Soc
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Smart-Bus-Tracking.git
+git clone https://github.com/PR0810/Smart-Bus-Tracking.git
 cd Smart-Bus-Tracking
 
 2. Create Virtual Environment
